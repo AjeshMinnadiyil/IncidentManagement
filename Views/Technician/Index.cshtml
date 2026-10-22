@@ -1,0 +1,76 @@
+﻿
+@model IEnumerable<IncidentManagement.Models.TicketAssignment>
+
+@{
+    ViewData["Title"] = "Technician Dashboard";
+}
+
+<h2>Technician Dashboard</h2>
+
+<p>
+    <strong>My Assigned Tickets:</strong> @Model.Count()
+</p>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">
+        No tickets are currently assigned to you.
+    </div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>Request Number</th>
+                    <th>Title</th>
+                    <th>Category</th>
+                    <th>Status</th>
+                    <th>Assigned At</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var assignment in Model)
+                {
+                    var ticket = assignment.Ticket;
+
+                    if (ticket != null)
+                    {
+                        <tr>
+                            <td>@ticket.RequestNumber</td>
+                            <td>@ticket.Title</td>
+                            <td>@ticket.Category?.Name</td>
+                            <td>@ticket.Status</td>
+                            <td>
+                                @assignment.AssignedAt.ToLocalTime().ToString("dd-MM-yyyy HH:mm")
+                                   
+                                   
+                            </td>
+                            <td>
+                                @if (ticket.Status != "Resolved" &&
+                                     ticket.Status != "Closed")
+                                {
+                                    <a asp-controller="Ticket"
+                                       asp-action="Update"
+                                       asp-route-id="@ticket.Id"
+                                       class="btn btn-primary">
+                                        Update Status
+                                    </a>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-success">
+                                        @ticket.Status
+                                    </span>
+                                }
+                            </td>
+
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+}

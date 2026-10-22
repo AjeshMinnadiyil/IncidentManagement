@@ -1,0 +1,148 @@
+﻿
+@model IEnumerable<IncidentManagement.Models.Ticket>
+
+@{
+    ViewData["Title"] = "Admin Dashboard";
+}
+
+<h2>Admin Dashboard</h2>
+<div class="alert alert-info">
+    Total tickets displayed: @Model.Count()
+</div>
+
+<form asp-controller="Admin"
+      asp-action="Index"
+      method="get"
+      class="row g-2 mb-4">
+
+    <div class="col-md-6">
+        <input type="text"
+               name="searchString"
+               value="@ViewBag.SearchString"
+               class="form-control"
+               placeholder="Search request number or title..." />
+    </div>
+
+   
+    <div class="col-md-3">
+        <select name="status" class="form-select">
+            <option value="All"
+                    selected="@(ViewBag.SelectedStatus == "All")">
+                All Statuses
+            </option>
+
+            <option value="Open"
+                    selected="@(ViewBag.SelectedStatus == "Open")">
+                Open
+            </option>
+
+            <option value="In Progress"
+                    selected="@(ViewBag.SelectedStatus == "In Progress")">
+                In Progress
+            </option>
+
+            <option value="Resolved"
+                    selected="@(ViewBag.SelectedStatus == "Resolved")">
+                Resolved
+            </option>
+
+            <option value="Reopened"
+                    selected="@(ViewBag.SelectedStatus == "Reopened")">
+                Reopened
+            </option>
+
+            <option value="Closed"
+                    selected="@(ViewBag.SelectedStatus == "Closed")">
+                Closed
+            </option>
+        </select>
+    </div>
+
+
+    <div class="col-md-3">
+        <button type="submit" class="btn btn-primary">
+            Search / Filter
+        </button>
+
+        <a asp-controller="Admin"
+           asp-action="Index"
+           class="btn btn-secondary">
+            Reset
+        </a>
+    </div>
+</form>
+
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["SuccessMessage"]
+    </div>
+}
+<div class="mb-3">
+    <span class="badge bg-primary">
+        Total Tickets: @Model.Count()
+    </span>
+</div>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">
+        No tickets have been created yet.
+    </div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>Request Number</th>
+                    <th>Title</th>
+                    <th>Request Type</th>
+                    <th>Category</th>
+                    <th>Status</th>
+                    <th>Created At</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var ticket in Model)
+                {
+                    <tr>
+                        <td>@ticket.RequestNumber</td>
+                        <td>@ticket.Title</td>
+                        <td>@ticket.Category?.RequestType</td>
+                        <td>@ticket.Category?.Name</td>
+                        <td>
+                            <span class="badge bg-secondary">
+                                @ticket.Status
+                            </span>
+                        </td>
+                        
+                            <td>
+                                @ticket.CreatedAt.ToLocalTime().ToString("dd-MM-yyyy HH:mm")
+                            </td>
+                        
+                        <td>
+
+                            @if (ViewBag.ActiveTicketIds.Contains(ticket.Id))
+                            {
+                                <span class="badge bg-info">Assigned</span>
+                            }
+                            else
+                            {
+                                <a asp-action="Assign"
+                                   asp-route-id="@ticket.Id"
+                                   class="btn btn-primary">
+                                    Assign Technician
+                                </a>
+                            }
+
+</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

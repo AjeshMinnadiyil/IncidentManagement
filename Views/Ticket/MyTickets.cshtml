@@ -1,0 +1,85 @@
+﻿
+@model IEnumerable<IncidentManagement.Models.Ticket>
+
+@{
+    ViewData["Title"] = "My Tickets";
+}
+
+<h2>My Tickets</h2>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["SuccessMessage"]
+    </div>
+}
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">
+        + Create New Ticket
+    </a>
+</p>
+
+@if (!Model.Any())
+{
+    <p>You have not created any tickets yet.</p>
+}
+else
+{
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>Request Number</th>
+                <th>Title</th>
+                <th>Request Type</th>
+                <th>Category</th>
+                <th>Status</th>
+                <th>Created At</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var ticket in Model)
+            {
+                <tr>
+                    <td>@ticket.RequestNumber</td>
+                    <td>@ticket.Title</td>
+                    <td>@ticket.Category?.RequestType</td>
+                    <td>@ticket.Category?.Name</td>
+                   
+<td>
+    @if (ticket.Status == "Open")
+    {
+        <span class="badge bg-danger">Open</span>
+    }
+    else if (ticket.Status == "In Progress")
+    {
+        <span class="badge bg-warning text-dark">
+            In Progress
+        </span>
+    }
+    else if (ticket.Status == "Resolved")
+    {
+        <span class="badge bg-success">Resolved</span>
+    }
+    else
+    {
+        <span class="badge bg-secondary">
+            @ticket.Status
+        </span>
+    }
+</td>
+
+                    <td>@ticket.CreatedAt.ToLocalTime().ToString("dd-MM-yyyy HH:mm")</td>
+                    <td>
+    <a asp-action="Details"
+       asp-route-id="@ticket.Id"
+       class="btn btn-sm btn-info">
+        Details
+    </a>
+</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

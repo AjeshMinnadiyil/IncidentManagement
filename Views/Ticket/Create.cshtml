@@ -1,0 +1,105 @@
+﻿
+@model IncidentManagement.ViewModels.CreateTicketViewModel
+
+@{
+    ViewData["Title"] = "Create Ticket";
+}
+
+<h2>Create Incident Ticket</h2>
+
+<form asp-controller="Ticket" asp-action="Create" method="post">
+    @Html.AntiForgeryToken()
+
+    <div asp-validation-summary="ModelOnly"
+         class="text-danger mb-3"></div>
+
+    <div class="mb-3">
+        <label asp-for="RequestType" class="form-label">
+            Request Type
+        </label>
+
+        <select asp-for="RequestType" class="form-select"
+                id="requestType">
+            <option value="Software">Software</option>
+            <option value="Hardware">Hardware</option>
+        </select>
+
+        <span asp-validation-for="RequestType"
+              class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="CategoryId" class="form-label">
+            Category
+        </label>
+
+        <select asp-for="CategoryId"
+                asp-items="ViewBag.Categories"
+                class="form-select"
+                id="categoryId">
+            <option value="">-- Select Category --</option>
+        </select>
+
+        <span asp-validation-for="CategoryId"
+              class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Title" class="form-label"></label>
+        <input asp-for="Title" class="form-control" />
+        <span asp-validation-for="Title"
+              class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Description" class="form-label"></label>
+        <textarea asp-for="Description"
+                  class="form-control"
+                  rows="5"></textarea>
+        <span asp-validation-for="Description"
+              class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">
+        Submit Ticket
+    </button>
+
+    <a asp-action="MyTickets" class="btn btn-secondary">
+        My Tickets
+    </a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        const requestType = document.getElementById("requestType");
+        const categorySelect = document.getElementById("categoryId");
+
+        function filterCategories() {
+            const type = requestType.value;
+            let selectedOptionAvailable = false;
+
+            for (const option of categorySelect.options) {
+                if (option.value === "") {
+                    option.hidden = false;
+                    continue;
+                }
+
+                const matches = option.text.startsWith(type + " - ");
+                option.hidden = !matches;
+
+                if (matches && option.selected) {
+                    selectedOptionAvailable = true;
+                }
+            }
+
+            if (!selectedOptionAvailable) {
+                categorySelect.value = "";
+            }
+        }
+
+        requestType.addEventListener("change", filterCategories);
+        filterCategories();
+    </script>
+}
