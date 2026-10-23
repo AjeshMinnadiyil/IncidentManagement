@@ -32,10 +32,8 @@ An ASP.NET Core MVC web application for managing incident tickets, assigning tec
    ```
 
 2. Open the project in Visual Studio.
-
 3. Update the `DefaultConnection` connection string in `appsettings.json`.
-
-4. Apply database migrations:
+4. Apply database migrations using the Package Manager Console:
 
    ```powershell
    Update-Database
@@ -45,15 +43,15 @@ An ASP.NET Core MVC web application for managing incident tickets, assigning tec
 
 ## Demo Accounts
 
-The application creates demo accounts for testing when the development seeding code is enabled and runs successfully.
+| Role | Email | Password |
+|---|---|---|
+| Admin | `admin.demo@example.com` | `AdminDemo@123` |
+| Employee | `employee.demo@example.com` | `EmployeeDemo@123` |
+| Technician | `technician.demo@example.com` | `TechDemo@123` |
 
-| Role | Email |
-|---|---|
-| Admin | `admin.demo@example.com` |
-| Employee | `employee.demo@example.com` |
-| Technician | `technician.demo@example.com` |
+*Demo accounts are created when the development seeding code is enabled and runs successfully.*
 
-Demo passwords are configured in the application's development seeding code.
+**Note:** These credentials are for demonstration purposes only. Do not use them in production.
 
 ## Author
 
